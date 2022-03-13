@@ -1,0 +1,62 @@
+FROM uhub.service.ucloud.cn/roamingunner/core-ubuntu-bionic:1.10.0-rolling
+USER root
+
+ENV HOME /home/kasm-default-profile
+ENV STARTUPDIR /dockerstartup
+ENV INST_SCRIPTS $STARTUPDIR/install
+WORKDIR $HOME
+
+######### Customize Container Here ###########
+
+COPY ./src/ubuntu/apt-sources-list/sources.list /etc/apt/sources.list
+
+# Add Kasm Branding
+RUN cp /usr/share/extra/backgrounds/bg_kasm.png /usr/share/extra/backgrounds/bg_default.png
+RUN cp /usr/share/extra/icons/icon_kasm.png /usr/share/extra/icons/icon_default.png
+RUN sed -i 's/ubuntu-mono-dark/elementary-xfce/g' $HOME/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml
+
+# Install Utilities
+COPY ./src/ubuntu/install/misc $INST_SCRIPTS/misc/
+RUN bash $INST_SCRIPTS/misc/install_tools.sh && rm -rf $INST_SCRIPTS/misc/
+
+# Install shadowsocks-libev
+COPY ./src/ubuntu/install/shadowsocks-libev $INST_SCRIPTS/shadowsocks-libev/
+RUN bash $INST_SCRIPTS/shadowsocks-libev/install_shadowsocks-libev.sh && rm -rf $INST_SCRIPTS/shadowsocks-libev/
+
+
+# Install Google Chrome
+COPY ./src/ubuntu/install/chrome $INST_SCRIPTS/chrome/
+RUN bash $INST_SCRIPTS/chrome/install_chrome.sh  && rm -rf $INST_SCRIPTS/chrome/
+# add Google Chrome plugin
+COPY ./src/ubuntu/install/chrome/extensions.json /etc/opt/chrome/policies/managed/extensions.json
+
+
+### Install Visual Studio Code
+COPY ./src/ubuntu/install/vs_code $INST_SCRIPTS/vs_code/
+RUN bash $INST_SCRIPTS/vs_code/install_vs_code.sh  && rm -rf $INST_SCRIPTS/vs_code/
+
+### Install Bcompare 4
+COPY ./src/ubuntu/install/bcompare $INST_SCRIPTS/bcompare/
+RUN bash $INST_SCRIPTS/bcompare/install_bcompare.sh  && rm -rf $INST_SCRIPTS/bcompare/
+
+# Install Custom Certificate Authority
+# COPY ./src/ubuntu/install/certificates $INST_SCRIPTS/certificates/
+# RUN bash $INST_SCRIPTS/certificates/install_ca_cert.sh && rm -rf $INST_SCRIPTS/certificates/
+
+# add root user
+RUN apt-get update \
+    && apt-get install -y sudo \
+    && useradd -m -d /home/kasm-user -s /bin/bash kasm-user \
+    && echo 'kasm-user ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers \
+    && rm -rf /var/lib/apt/list/*
+
+######### End Customizations ###########
+
+RUN chown 1000:0 $HOME
+RUN $STARTUPDIR/set_user_permission.sh $HOME
+
+ENV HOME /home/kasm-user
+WORKDIR $HOME
+RUN mkdir -p $HOME && chown -R 1000:0 $HOME
+
+USER 1000
