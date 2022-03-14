@@ -28,16 +28,15 @@ RUN bash $INST_SCRIPTS/shadowsocks-libev/install_shadowsocks-libev.sh && rm -rf 
 COPY ./src/ubuntu/install/chrome $INST_SCRIPTS/chrome/
 RUN bash $INST_SCRIPTS/chrome/install_chrome.sh  && rm -rf $INST_SCRIPTS/chrome/
 # add Google Chrome plugin
-COPY ./src/ubuntu/install/chrome/extensions.json /etc/opt/chrome/policies/managed/extensions.json
-
+# COPY ./src/ubuntu/install/chrome/extensions.json /etc/opt/chrome/policies/managed/extensions.json
 
 ### Install Visual Studio Code
 COPY ./src/ubuntu/install/vs_code $INST_SCRIPTS/vs_code/
 RUN bash $INST_SCRIPTS/vs_code/install_vs_code.sh  && rm -rf $INST_SCRIPTS/vs_code/
 
 ### Install Bcompare 4
-COPY ./src/ubuntu/install/bcompare $INST_SCRIPTS/bcompare/
-RUN bash $INST_SCRIPTS/bcompare/install_bcompare.sh  && rm -rf $INST_SCRIPTS/bcompare/
+# COPY ./src/ubuntu/install/bcompare $INST_SCRIPTS/bcompare/
+# RUN bash $INST_SCRIPTS/bcompare/install_bcompare.sh  && rm -rf $INST_SCRIPTS/bcompare/
 
 # Install Custom Certificate Authority
 # COPY ./src/ubuntu/install/certificates $INST_SCRIPTS/certificates/
@@ -49,6 +48,12 @@ RUN apt-get update \
     && useradd -m -d /home/kasm-user -s /bin/bash kasm-user \
     && echo 'kasm-user ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers \
     && rm -rf /var/lib/apt/list/*
+
+# set timezone
+ENV TZ=Asia/Shanghai
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN apt-get install tzdata
+RUN dpkg-reconfigure --frontend noninteractive tzdata
 
 ######### End Customizations ###########
 
