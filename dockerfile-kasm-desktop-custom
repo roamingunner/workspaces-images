@@ -34,9 +34,9 @@ RUN bash $INST_SCRIPTS/chrome/install_chrome.sh  && rm -rf $INST_SCRIPTS/chrome/
 COPY ./src/ubuntu/install/vs_code $INST_SCRIPTS/vs_code/
 RUN bash $INST_SCRIPTS/vs_code/install_vs_code.sh  && rm -rf $INST_SCRIPTS/vs_code/
 
-### Install Bcompare 4
-# COPY ./src/ubuntu/install/bcompare $INST_SCRIPTS/bcompare/
-# RUN bash $INST_SCRIPTS/bcompare/install_bcompare.sh  && rm -rf $INST_SCRIPTS/bcompare/
+### Install vnote
+COPY ./src/ubuntu/install/vnote $INST_SCRIPTS/vnote/
+RUN bash $INST_SCRIPTS/vnote/install_vnote.sh  && rm -rf $INST_SCRIPTS/vnote/
 
 # Install Custom Certificate Authority
 # COPY ./src/ubuntu/install/certificates $INST_SCRIPTS/certificates/
