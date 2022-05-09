@@ -7,5 +7,5 @@ if [ "$DISTRO" = centos ]; then
   yum install xdotool -y
 else
   apt-get update
-  apt-get install -y nano zip xdotool gcc curl vim wget meld
+  apt-get install -y nano zip xdotool gcc curl vim wget meld subversion
 fi

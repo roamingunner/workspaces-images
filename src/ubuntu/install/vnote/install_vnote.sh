@@ -6,7 +6,7 @@ cd /opt/vnote
 wget https://github.com/vnotex/vnote/releases/download/${VNOTE_VERSION}/vnote-linux-x64_${VNOTE_VERSION}.zip -O vnote-linux-x64_${VNOTE_VERSION}.zip 
 unzip -x vnote-linux-x64_${VNOTE_VERSION}.zip 
 chmod +x vnote-linux-x64_${VNOTE_VERSION}.AppImage
-vnote-linux-x64_${VNOTE_VERSION}.AppImage --appimage-extract
+./vnote-linux-x64_${VNOTE_VERSION}.AppImage --appimage-extract
 rm vnote-linux-x64_${VNOTE_VERSION}.AppImage vnote-linux-x64_${VNOTE_VERSION}.zip 
 chown -R 1000:1000 /opt/vnote
 
