@@ -2,7 +2,8 @@
 set -ex
 START_COMMAND="rdesktop"
 PGREP="rdesktop"
-MAXIMUS="false"
+export MAXIMIZE="false"
+MAXIMIZE_SCRIPT=$STARTUPDIR/maximize_window.sh
 DEFAULT_ARGS="-f localhost "
 ARGS=${APP_ARGS:-$DEFAULT_ARGS}
 
@@ -38,6 +39,7 @@ kasm_exec() {
     if [ -n "$URL" ] ; then
         /usr/bin/filter_ready
         /usr/bin/desktop_ready
+        bash ${MAXIMIZE_SCRIPT} &
         $START_COMMAND $ARGS $OPT_URL
     else
         echo "No URL specified for exec command. Doing nothing."
@@ -52,11 +54,9 @@ kasm_startup() {
     fi
 
     if [ -z "$DISABLE_CUSTOM_STARTUP" ] ||  [ -n "$FORCE" ] ; then
-        
-        if [[ $MAXIMUS == 'true' ]] ; then
-            maximus &
-        fi
-        
+
+        echo "Entering process startup loop"
+        set +x
         while true
         do
             if ! pgrep -x $PGREP > /dev/null
@@ -65,11 +65,13 @@ kasm_startup() {
                 /usr/bin/filter_ready
                 /usr/bin/desktop_ready
                 set +e
+                bash ${MAXIMIZE_SCRIPT} &
                 $START_COMMAND $ARGS $URL
                 set -e
             fi
             sleep 1
         done
+        set -x
     
     fi
 

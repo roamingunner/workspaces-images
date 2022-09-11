@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 set -ex
-START_COMMAND="/home/kasm-user/bin/dockerd-rootless.sh"
+START_COMMAND="$DOCKER_BIN/dockerd-rootless.sh"
 PGREP="dockerd"
-MAXIMUS="false"
+export MAXIMIZE="false"
+MAXIMIZE_SCRIPT=$STARTUPDIR/maximize_window.sh
 DEFAULT_ARGS=""
 ARGS=${APP_ARGS:-$DEFAULT_ARGS}
 
@@ -26,6 +27,25 @@ done
 
 FORCE=$2
 
+kasm_exec() {
+    if [ -n "$OPT_URL" ] ; then
+        URL=$OPT_URL
+    elif [ -n "$1" ] ; then
+        URL=$1
+    fi
+
+    # Since we are execing into a container that already has the browser running from startup,
+    #  when we don't have a URL to open we want to do nothing. Otherwise a second browser instance would open.
+    if [ -n "$URL" ] ; then
+        /usr/bin/filter_ready
+        /usr/bin/desktop_ready
+        bash ${MAXIMIZE_SCRIPT} &
+        $START_COMMAND $ARGS
+    else
+        echo "No URL specified for exec command. Doing nothing."
+    fi
+}
+
 kasm_startup() {
     if [ -n "$KASM_URL" ] ; then
         URL=$KASM_URL
@@ -35,10 +55,8 @@ kasm_startup() {
 
     if  [ -z "$DISABLE_CUSTOM_STARTUP" ] ||  [ -n "$FORCE" ]  ; then
 
-         if [[ $MAXIMUS == 'true' ]] ; then
-            maximus &
-        fi       
-
+        echo "Entering process startup loop"
+        set +x
         while true
         do
             if ! pgrep -x $PGREP > /dev/null
@@ -46,11 +64,13 @@ kasm_startup() {
                 /usr/bin/filter_ready
                 /usr/bin/desktop_ready
                 set +e
-                $START_COMMAND $ARGS 
+                bash ${MAXIMIZE_SCRIPT} &
+                $START_COMMAND $ARGS
                 set -e
             fi
             sleep 1
         done
+        set -x
     
     fi
 

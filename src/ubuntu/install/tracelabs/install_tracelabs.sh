@@ -19,7 +19,6 @@ cat kali-config/variant-tracelabs/package-lists/kali.list.chroot | sed '/^#/d' |
 
 sh kali-config/common/hooks/normal/osint-packages.chroot
 
-useradd kasm-user 
 chown -R 1000:1000 \
     /usr/share/phoneinfoga \
     /usr/share/Spiderpig \
@@ -34,6 +33,8 @@ chown -R 1000:1000 \
     /usr/share/WikiLeaker \
     /usr/share/OnionSearch \
     /usr/share/toutatis 
+
+apt-get install -y python3-pip
 
 pip3 install --force-reinstall zope.event
 

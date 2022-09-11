@@ -9,6 +9,3 @@ cp /usr/share/applications/insomnia.desktop $HOME/Desktop
 chmod +x $HOME/Desktop/insomnia.desktop
 chown 1000:1000 $HOME/Desktop/insomnia.desktop
 rm insomnia.deb
-
-# Conveniences for python development
-apt-get install -y  maximus

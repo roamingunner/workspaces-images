@@ -2,7 +2,9 @@
 set -ex
 START_COMMAND="$HOME/tor-browser/tor-browser_en-US/Browser/start-tor-browser"
 PGREP="firefox.real"
-MAXIMUS="false"
+MAXIMIZE=${MAXIMIZE:-"true"}
+export MAXIMIZE=$MAXIMIZE
+MAXIMIZE_SCRIPT=$STARTUPDIR/maximize_window.sh
 DEFAULT_ARGS="--detach --allow-remote --new-tab"
 ARGS=${APP_ARGS:-$DEFAULT_ARGS}
 
@@ -39,6 +41,7 @@ kasm_exec() {
         /usr/bin/filter_ready
         /usr/bin/desktop_ready
         set +e
+        bash ${MAXIMIZE_SCRIPT} &
         $START_COMMAND $ARGS $OPT_URL
         set -e
     else
@@ -55,10 +58,8 @@ kasm_startup() {
 
     if [ -z "$DISABLE_CUSTOM_STARTUP" ] ||  [ -n "$FORCE" ] ; then
 
-        if [[ $MAXIMUS == 'true' ]] ; then
-            maximus &
-        fi
-        
+        echo "Entering process startup loop"
+        set +x
         while true
         do
             if ! pgrep -x $PGREP > /dev/null
@@ -66,11 +67,13 @@ kasm_startup() {
                 /usr/bin/filter_ready
                 /usr/bin/desktop_ready
                 set +e
+                bash ${MAXIMIZE_SCRIPT} &
                 $START_COMMAND $ARGS $URL
                 set -e
             fi
             sleep 1
         done
+        set -x
     
     fi
 
