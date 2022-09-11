@@ -1,5 +1,6 @@
 ARG BASE_TAG="develop"
-FROM kasmweb/core-ubuntu-bionic:$BASE_TAG
+ARG BASE_IMAGE="core-ubuntu-focal"
+FROM kasmweb/$BASE_IMAGE:$BASE_TAG
 
 USER root
 
@@ -52,9 +53,6 @@ RUN apt-get update && apt-get install -y default-jdk default-jre
 ### Install Eclipse
 COPY ./src/ubuntu/install/eclipse $INST_SCRIPTS/eclipse
 RUN bash $INST_SCRIPTS/eclipse/install_eclipse.sh && rm -rf $INST_SCRIPTS/eclipse/
-
-### Remove maxmius
-RUN apt-get remove -y maximus
 
 #ADD ./src/common/scripts $STARTUPDIR
 RUN $STARTUPDIR/set_user_permission.sh $HOME
