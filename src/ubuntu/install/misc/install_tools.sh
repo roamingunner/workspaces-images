@@ -7,6 +7,5 @@ if [ "$DISTRO" = centos ]; then
   yum install xdotool -y
 else
   apt-get update
-  apt-get install -y nano zip xdotool gcc curl vim wget meld subversion proxychains
-  echo "socks5  127.0.0.1 1080" > /etc/proxychains.conf
+  apt-get install -y nano zip xdotool gcc curl vim wget meld subversion 
 fi
