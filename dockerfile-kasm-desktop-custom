@@ -34,9 +34,13 @@ RUN bash $INST_SCRIPTS/chrome/install_chrome.sh  && rm -rf $INST_SCRIPTS/chrome/
 COPY ./src/ubuntu/install/vs_code $INST_SCRIPTS/vs_code/
 RUN bash $INST_SCRIPTS/vs_code/install_vs_code.sh  && rm -rf $INST_SCRIPTS/vs_code/
 
-### Install vnote
-COPY ./src/ubuntu/install/vnote $INST_SCRIPTS/vnote/
-RUN bash $INST_SCRIPTS/vnote/install_vnote.sh  && rm -rf $INST_SCRIPTS/vnote/
+### Install obsidian
+COPY ./src/ubuntu/install/obsidian $INST_SCRIPTS/obsidian/
+RUN bash $INST_SCRIPTS/obsidian/install_obsidian.sh  && rm -rf $INST_SCRIPTS/obsidian/
+
+### Install sublime
+COPY ./src/ubuntu/install/sublime_text $INST_SCRIPTS/sublime_text/
+RUN bash $INST_SCRIPTS/sublime_text/install_sublime_text.sh  && rm -rf $INST_SCRIPTS/sublime_text/
 
 # Install Custom Certificate Authority
 # COPY ./src/ubuntu/install/certificates $INST_SCRIPTS/certificates/
